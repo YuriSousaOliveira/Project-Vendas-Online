@@ -18,13 +18,13 @@ export class UserService {
 
     return this.userRepository.save({
       ...createUserDto,
-      type_user: 1,
+      typeUser: 1,
       password: newPassword,
     });
   }
 
   async getUserByIdUsingRelations(userId: number): Promise<UserEntity> {
-    return this.userRepository.findOne({
+    const user: UserEntity = await this.userRepository.findOne({
       where: {
         id: userId,
       },
@@ -36,6 +36,10 @@ export class UserService {
         },
       },
     });
+
+    if (!user) throw new NotFoundException('User not Found');
+
+    return user;
   }
 
   async getAllUsers(): Promise<UserEntity[]> {
