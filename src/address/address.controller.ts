@@ -12,6 +12,8 @@ import { AddressEntity } from './entities/address.entity';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserType } from 'src/user/enum/user-type.enum';
 import { UserId } from 'src/decorators/user-id.decorator';
+import { LoginPayloadDto } from 'src/auth/dtos/loginPayload.dto';
+
 @Roles(UserType.User)
 @Controller('address')
 export class AddressController {
@@ -21,9 +23,9 @@ export class AddressController {
   @UsePipes(ValidationPipe)
   async createAddress(
     @Body() createAddressDto: CreateAddressDto,
-    @UserId() userId: number,
+    @UserId() user: LoginPayloadDto,
   ): Promise<AddressEntity> {
-    return this.addressService.createAddress(createAddressDto, userId);
+    return this.addressService.createAddress(createAddressDto, user?.id);
   }
 
   @Get()
