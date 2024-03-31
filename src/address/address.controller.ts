@@ -13,8 +13,9 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserType } from '../user/enum/user-type.enum';
 import { UserId } from '../decorators/user-id.decorator';
 import { LoginPayloadDto } from '../auth/dtos/loginPayload.dto';
+import { ReturnAddressDto } from './dtos/returnAddress.dto';
 
-@Roles(UserType.User)
+@Roles(UserType.User, UserType.Admin)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
@@ -26,6 +27,15 @@ export class AddressController {
     @UserId() user: LoginPayloadDto,
   ): Promise<AddressEntity> {
     return this.addressService.createAddress(createAddressDto, user?.id);
+  }
+
+  @Get('user')
+  async findAddressByUserId(
+    @UserId() user: LoginPayloadDto,
+  ): Promise<ReturnAddressDto[]> {
+    return (await this.addressService.findAddressByUserId(user?.id)).map(
+      (address) => new ReturnAddressDto(address),
+    );
   }
 
   @Get()
